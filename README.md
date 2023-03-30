@@ -1,13 +1,124 @@
 # 202130434 한지수 
 ---
+## 2023-03-30 5주차 
+#### [클론 만들기]
+- 똑같은 파일 하나 더 만드는 것
+- 커밋하는 창 가서 clone 클릭
+- 클릭하고 주소 입력하는 곳에는 깃허브에서 code 누르고 복사해오기
+### 4장.엘리먼트 렌더링
+#### [엘리먼트]
+- Element라는 영단어는 요소, 성분이라는 뜻
+- 리액트의 엘리먼트는 리액트 앱을 구성하는 요소
+- 엘리먼트는 리액트 앱의 가장 작은 빌딩 블록들
+- 리액트 엘리먼트는 DOM 엘리먼트의 가상 표현
+- DOM 엘리먼트는 리액트 엘리먼트에 비해서 많은 정보를 담고 있기 때문에 상대적으로 크고 무거움
+- 리액트 엘리먼트는 화면에서 보이는 것을 기술
+#### [엘리먼트의 생김새]
+- 리액트 엘리먼트는 자바스크립트 객체 형태로 존재
+- 엘리먼트는 컴포넌트 유형과 속성 및 내부의 모든 자식에 대한 정보를 포함하고 있는 일반적인 자바스크립트 객체
+- 마음대로 변경할 수 없는 불변성을 갖고 있음
+- 리액트의 엘리먼트는 우리 눈에 실제로 보이는 것을 기술
+#### [엘리먼트의 특징]
+- 불변성을 가지고 있음
+- 엘리먼트 생성 후에는 children이나 attributes를 바꿀 수 없음
+#### [엘리먼트 렌더링하기]
+- 렌더링을 위해 ReactDOM의 render()라는 함수를 사용
+  - 리액트 엘리먼트를 HTML 엘리먼트에 렌더링하는 역할
+- 렌더링되는 과정은 Virtual DOM에서 실제 DOM으로 이동하는 과정  
+#### [렌더링 된 엘리먼트 업데이트하기]
+- 엘리먼트는 한 번 생성되면 바꿀 수 없기 때문에 엘리먼트를 업데이트하기 위해서는 다시 생성해야 함
+- 기존 엘리먼트를 변경하는 것이 아니라 새로운 엘리먼트를 생성해서 바꿔치기 하는 것
+- test.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function tick() {
+        const element = (
+            <div>
+                <h1>안녕 리액트!</h1>
+                <h2>현재 시간 : {new Date().toLocaleTimeString()}</h2>
+            </div>
+        );
+    
+        ReactDOM.render(element, document.getElementById('root'));
+    }
+    
+    setInterval(tick, 1000);
+    </script>
+</body>
+</html>
+```
+#### [실습 - 시계 만들기]
+- Clock.jsx
+```jsx
+import React from "react";
+
+function Clock(props) {
+    return (
+        <div>
+            <h1>안녕 리액트!</h1>
+            <h2>현재 시간 : {new Date().toLocaleTimeString()}</h2>
+        </div>
+    );
+}
+
+export default Clock;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+
+setInterval(() => {
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(
+    <React.StrictMode>
+      <Clock />
+    </React.StrictMode>
+  );
+}, 1000);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+### 5장.컴포넌트와 Props
+#### [컴포넌트]
+- 리액트를 컴포넌트 기반이라고 부르는 것은 작은 컴포넌트들이 모여서 하나의 컴포넌트를 구성하고, 이러한 컴포넌트들이 모여서 전체 페이지를 구성하기 때문
+- 리액트 컴포넌트는 개념적으로 자바스크립트의 함수와 비슷
+- 리액트 컴포넌트가 해주는 역할은 어떠한 속성들을 입력으로 박아서 그에 맞는 리액트 엘리먼트를 생성하여 리턴해주는 것
+
+
+
+
+---
 ## 2023-03-23 4주차 
 #### [마크다운(MarkDown) 언어]
-- h1 = #
-- h2 = ##
-- h3 = ###
-- h4 = ####
-- h5 = #####
-- h6 = ######
+- h1 = # + 공백 
+- h2 = ## + 공백 
+- h3 = ### + 공백 
+- h4 = #### + 공백 
+- h5 = ##### + 공백 
+- h6 = ###### + 공백 
 - 순서 있는 목록 : 1/2/3... + 공백 
 - 순서 없는 목록 : -/+/* + 공백
 - 코드 쓸 때 : ``` + 코드종류 + 줄바꾸기 + 작성할코드 + 줄바꾸기 + 처음과 똑같은 `*3
@@ -34,6 +145,61 @@
 - 기본적으로 JSX는 자바스크립트 문법을 향상시킨 것이기 때문에 모든 자바스크립트 문법을 지원하고, 여기에 추가로 XML과 HTML을 섞어서 사용하면 됨
 - HTML 태그 중간이 아닌 태그의 속성에 값을 넣고 싶을 때에는 큰따옴표 사이에 문자열을 넣거나 중괄호 사이에 자바스크립트 코드를 넣으면 됨
 - JSX에서는 중괄호를 사용하면 무조건 자바스크립트 코드가 들어간다라고 외워 두는 게 좋음
+#### [실습 - JSX 코드 작성해 보기]
+- Book.jsx
+```jsx
+import React from "react";
+
+function Book(props) {
+  return (
+    <div>
+      <h1>{`이 책의 이름은 ${props.name}입니다.`}</h1>
+      <h2>{`이 책은 총 ${props.numOfPage}페이지로 이뤄져 있습니다.`}</h2>
+    </div>
+  );
+}
+
+export default Book;
+```
+- Library.jsx
+```jsx
+import React from "react";
+import Book from "./Book";
+
+function Library(props) {
+  return (
+    <div>
+      <Book name="처음 만난 파이썬" numOfPage={300} />
+      <Book name="처음 만난 AWS" numOfPage={400} />
+      <Book name="처음 만난 리엑트" numOfPage={500} />
+    </div>
+  );
+}
+
+export default Library;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <Library />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
 ---
 ## 2023-03-16 3주차 
 #### 이름은 h1, 날짜는 h2
