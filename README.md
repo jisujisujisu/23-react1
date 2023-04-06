@@ -1,5 +1,276 @@
 # 202130434 한지수 
 ---
+## 2023-04-06 6주차 
+### 5장.컴포넌트와 Props
+#### [컴포넌트 추출]
+- 컴포넌트 합성과 반대로 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수도 있는데 이런 과정을 컴포넌트 추출이라고 함
+- 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만든다는 뜻
+- 컴포넌트 추출을 잘 활용하게 되면 컴포넌트의 재사용성이 올라가게 되고, 개발 속도도 향상됨
+- 컴포넌트를 어느 정도 수준까지 추출하는 것이 좋은지에 대해 정해진 기준은 없지만, 기능 단위로 구분하는 것이 좋고, 나중에 곧바로 재사용이 가능한 형태로 추출하는 것이 좋음
+#### [실습 - 댓글 컴포넌트 만들기]
+- Comment.jsx
+```jsx
+import React from "react";
+
+const styles = {
+    wrapper: {
+        margin: 8,
+        padding: 8,
+        display: "flex",
+        flexDirection: "row",
+        border: "1px solid grey",
+        borderRadius: 16,
+    },
+    imageContainer: {},
+    image: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
+    contentContainer: {
+        marginLeft: 8,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+    },
+    nameText: {
+        color: "black",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    commentText: {
+        color: "black",
+        fontSize: 16,
+    },
+  };
+  
+
+function Comment(props) {
+    return (
+        <div style={styles.wrapper}>
+            <div style={styles.imageContainer}>
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+                    style={styles.image}
+                />    
+            </div>
+
+            <div style={styles.contentContainer}>
+                <span style={styles.nameText}>{props.name}</span>
+                <span style={styles.commentText}>{props.comment}</span>
+            </div>
+        </div>
+    );
+}
+
+export default Comment;
+```
+- CommentList.jsx
+```jsx
+import React from "react";
+import Comment from "./Comment";
+
+const comments = [
+    {
+        name: "한지수",
+        comment: "안녕하세요. 한지수입니다.",
+    },
+    {
+        name: "두지수",
+        comment: "안녕하세요. 두지수입니다.",
+    },
+    {
+        name: "세지수",
+        comment: "안녕하세요. 세지수입니다.",
+    },
+];
+
+function CommentList(props) {
+    return (
+        <div>
+            {comments.map((c) => {
+                return (
+                    <Comment name={c.name} comment={c.comment} />
+                );
+            })}
+        </div>
+    );
+}
+
+export default CommentList;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <CommentList />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+### 6장.State와 생명주기
+#### [State]
+- 리액트에서의 state는 리액트 컴포넌트의 상태를 의미
+  - 단 상태라는 단어가 정상인지 비정상인지를 나타내는 것이라기 보다는 리액트 컴포넌트의 데이터라는 의미에 더 가까움
+- 쉽게 말하면, 리액트 컴포넌트의 변경 가능한 데이터를 state
+- state를 정의할 때 중요한 점은 꼭 렌더링이나 데이터 흐름에 사용되는 값만 state에 포함시켜야 함
+- 데이터 흐름에 관련없는 값은 컴포넌트 인스턴트의 필드로 정의하면 됨
+#### [State의 특징] 
+- 리액트의 state는 따로 복잡한 형태가 있는 것이 아니라, 그냥 하나의 자바스크립트 객체
+- state는 직접적인 변경이 불가능  
+  - state를 변경하고자 할 때에는 꼭 setState()라는 함수를 사용해야 함
+#### [리액트의 생명주기]
+- 리액트도 사람과 마찬가지로 컴포넌트가 생성되는 시점과 사라지는 시점이 정해져 있음
+- {componentDidMount}, {componentDidUpdate}, {componentWillUnmount}는 생명주기에 따라 호출되는 클래스 컴포넌트의 함수인데, 이 함수들을 Lifecycle method라고 부르며 번역하면 생명주기 함수임
+- 컴포넌트는 계속 존재하는 것이 아니라 시간의 흐름에 따라 생성되고 업데이트되다가 사라짐
+- 마운트
+  - 출생
+  - 컴포넌트가 생성되는 시점
+  - Mount(마운트)라고 부르고 이때 constructor(생성자)가 실행됨
+  - 생성자에서는 컴포넌트의 state를 정의하게 됨
+- 업데이트
+  - 리액트 컴포넌트는 생애 동안 변화를 겪으며 여러번 렌더링됨
+  - 업데이트 과정에서는 컴포넌트의 props가 변경되거나 setState() 함수 호출에 의해 state가 변경되거나, forceUpdate() 라는 강제 업데이트 함수 호출로 인해 컴포넌트가 다시 렌더링되고, 렌더링 이후에 componentDidUpdate() 함수가 호출됨
+- 언마운트
+  - 사망
+  - 상위 컴포넌트에서 현재 컴포넌트를 더 이상 화면에 표시하지 않게 될 때 언마운트됨
+#### [실습 - state와 생명주기 함수 사용하기]
+- Notification.jsx
+```jsx
+import React from "react";
+
+const styles = {
+    wrapper: {
+        margin: 8,
+        padding: 8,
+        display: "flex",
+        flexDirection: "row",
+        border: "1px solid grey",
+        borderRadius: 16,
+    },
+    messageText: {
+        color: "black",
+        fontSize: 16,
+  },
+};
+
+class Notification extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {};
+    }
+
+    render() {
+        return (
+            <div style={styles.wrapper}>
+                <span style={styles.messageText}>
+                    {this.props.message}
+                </span>
+            </div>
+        );
+    }
+}
+
+export default Notification;
+```
+- NotificationList.jsx
+```jsx
+import React from "react";
+import Notification from "./Notification";
+
+const reservedNotifications = [
+    {
+        message: "안녕하세요, 오늘 일정을 알려드립니다.",
+    },
+    {
+        message: "점심식사 시간입니다.",
+    },
+    {
+        message: "이제 곧 미팅이 시작됩니다.",
+    },
+];
+
+var timer;
+
+class NotificationList extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            notifications: [],
+        };
+    }
+
+    componentDidMount() {
+        const { notifications } = this.state;
+        timer = setInterval(() => {
+            if (notifications.length < reservedNotifications.length) {
+                const index = notifications.length;
+                notifications.push(reservedNotifications[index]);
+                this.setState({
+                notifications: notifications,
+                });
+            } else {
+                clearInterval(timer);
+            }
+        }, 1000);
+    }
+
+    render() {
+        return (
+            <div>
+            {this.state.notifications.map((notification) => {
+            return <Notification message={notification.message} />
+            })}
+            </div>
+        );
+    }
+}
+
+export default NotificationList;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <NotificationList />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+---
 ## 2023-03-30 5주차 
 #### [클론 만들기]
 - 똑같은 파일 하나 더 만드는 것
