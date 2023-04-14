@@ -24,6 +24,119 @@
     - 의존성 배열은 이펙트가 의존하고 있는 배열인데 배열 안에 있는 변수 중에 하나라도 값이 변경되었을 때 이펙트 함수가 실행
 - 의존성 배열 없이 useEffect()를 사용하면 리액트는 DOM이 변경된 이후에 해당 이펙트 함수를 실행하라는 의미로 받아들임
 - useEffect()에서 리턴하는 함수는 컴포넌트가 마운트 해제될 때 호출    
+- useEffect()는 아래와 같이 사용
+   - useEffect(이펙트 함수, 의존성 배열);
+#### [useMemo]
+- useMemo()훅은 Memoized value를 리턴하는 훅
+- useMemo()훅을 사용하면 컴포넌트가 다시 렌더링될 때마다 연산량이 높은 작업을 반복하는 것을 피할 수 있기 때문에 결과적으로는 빠른 렌더링 속도 얻을 수 있음
+- useMemo()로 전달된 함수는 렌더링이 일어나는 동안 실행됨
+- useMemo()는 아래와 같이 사용
+   - const memoizedValue = useMemo (값 생성 함수, 의존성 배열);
+#### [useCallback]
+- useCallback()훅은 useMemo()훅과 유사한 역할을 함
+- useMemo()훅과의 차이점은 값이 아닌 함수를 반환한다는 점
+- useCallback()는 아래와 같이 사용
+   - const memoizedCallback = useCallback(콜백 함수, 의존성 배열);
+#### [useRef]
+- useRef()훅은 레퍼런스를 사용하기 위한 훅
+- 리액트에서 레퍼런스란 특정 컴포넌트에 접근할 수 있는 객체를 의미
+- useRef()훅은 변경 가능한 .current라는 속성을 가진 하나의 상자
+- useRef()훅은 매번 렌더링될 때마다 항상 같은 ref 객체를 반환
+- useRef()는 아래와 같이 사용
+   - const refContainer = useRef(초깃값);
+#### [훅의 규칙]
+1. 훅은 무조건 최상위 레벨에서만 호출해야 함
+   - 여기서 최상위 레벨은 리액트 함수 컴포넌트의 최상위 레벨
+   - 반복문이나 조건문 또는 중첩된 함수들 안에서 훅을 호출하면 안됨
+   - 훅은 컴포넌트가 렌더링 될 때마다 매번 같은 순서로 호출되어야 함
+2. 리액트 함수 컴포넌트에서만 훅을 호출해야 함
+   - 일반적인 자바스크립트 함수에서 훅을 호출하면 안됨
+   - 훅은 리액트 함수 컴포넌트에서 호출하거나 직접 만든 커스텀 훅에서만 호출할 수 있음
+#### [커스텀 훅]
+- 리액트에서 기본적으로 제공되는 훅들 이외에 추가적으로 필요한 기능이 있다면 직접 훅을 만들어 사용할 수 있는데, 이것을 커스텀 훅이라고 부름
+- 커스텀 훅 추출
+   - 이름이 use로 시작하고 내부에서 다른 훅을 호출하는 하나의 자바스크립트 함수로 하면 됨
+- 커스텀 훅 사용
+   - 커스텀 훅은 리액트 기능이 아닌 훅의 디자인에서 자연스럽게 따르는 규칙
+   - 이름은 꼭 use로 시작, use로 시작하지 않는다면 특정 함수의 내부에서 훅을 호출하는지를 알 수 없기 때문에 훅의 규칙 위반 여부를 자동으로 확인할 수 없음
+#### [실습 - 훅을 사용한 컴포넌트 개발] 
+- Accommodate.jsx
+```jsx
+import React, {useState, useEffect} from "react";
+import useCounter from "./useCounter";
+
+const MAX_CAPACITY = 10;
+
+function Accommodate(props) {
+    const [isFull, setIsFull] = useState(false);
+    const [count, increaseCount, decreaseCount] = useCounter(0);
+
+    useEffect(() => {
+        console.log("=======================");
+        console.log("useEffect() is called.");
+        console.log(`isFull : ${isFull}`);
+    });
+
+    useEffect(() => {
+        setIsFull(count >= MAX_CAPACITY);
+        console.log(`Current count value: ${count}`);
+    }, [count]);
+
+    return (
+        <div style={{padding: 16}}>
+            <p>{`총 ${count}명 수용했습니다.`}</p>
+
+            <button onClick={increaseCount} disabled={isFull}>입장</button>
+            <button onClick={decreaseCount}>퇴장</button>
+
+            {isFull && <p style={{color: "red"}}>정원이 가득찼습니다.</p>}
+        </div>
+    );
+}
+
+export default Accommodate;
+```
+- useCounter.jsx
+```jsx
+import React, {useState} from "react";
+
+function useCounter(initialValue) {
+    const [count, setCount] = useState(initialValue);
+
+    const increaseCount = () => setCount((count) => count + 1);
+    const decreaseCount = () => setCount((count) => Math.max(count - 1, 0));
+
+    return [count, increaseCount, decreaseCount];
+}
+
+export default useCounter;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+import Accommodate from './chapter_07/Accommodate';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <Accommodate />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
 ---
 ## 2023-04-06 6주차 
 ### 5장.컴포넌트와 Props
