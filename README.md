@@ -1,5 +1,217 @@
 # 202130434 한지수 
 ---
+## 2023-04-27 9주차 
+### 8장.이벤트 핸들링
+#### [이벤트 처리하기]
+- 카멜 표기법 사용
+    - 카멜 표기법 : 첫글자는 소문자로 시작하고, 중간에 나오는 새로운 단어의 첫글자를 대문자로 사용하는 방법  
+- DOM에서는 이벤트를 처리할 함수를 문자열로 전달하지만 리액트에서는 함수 그대로 전달함
+- DOM에도 이벤트가 있고 리액트에도 이벤트가 있지만 사용하는 방법이 조금 다름
+- 어떤 이벤트가 발생했을 때 해당 이벤트를 처리하는 함수가 있는데 이것을 이벤트 핸들러라고 부름
+- 또는 이벤트가 발생하는 것을 계속 듣고 있다는 의미로 이벤트 리스너라고 부르기도 함
+- JSX에서 this의 의미에 대해 유의해야하는데 bind를 하는 이유는 자바스크립트에서는 
+    - 기본적으로 클래스 함수들이 바운드 되지 않기 때문
+    - bind를 하지 않으면 this.handleClick은 글로벌 스코프에서 호출되는데 글로벌 스코프에서 this.handleClick은 undefined이므로 사용할 수가 없음
+    - 이것은 리액트에만 해당되는 내용이 아니라 자바스크립트 함수의 작동 원리 중 일부분
+- bind를 사용하는 방식이 번거로우면 클래스 필드 문법을 사용하면 됨
+- bind와 클래드 필드 문법을 사용하지 않으려면 이벤트 핸들러를 넣는 곳에 arrow function을 사용하는 방법도 있음
+#### [Arguments 전달하기]
+- 영단어 Argument는 주장, 논쟁, 말다툼이라는 뜻인데 여기에서는 주장이라는 뜻에 가까움 
+- 함수에 주장할 내용이라는 의미
+- 함수에 전달할 데이터를 Arguments라고 하며 같은 의미로 파라미터라는 용어도 많이 사용함, 우리 말로는 매개변수
+- 클래스 컴포넌트에서는 
+    1. arrow function 사용 
+    2. Function.prototype.bind 사용 
+- 함수 컴포넌트에서는
+    - 이벤트 핸들러에 매개변수를 전달할 때 원하는 순서대로 전달하면 됨
+#### [실습 - 클릭 이벤트 처리하기] 
+- ConfirmButton.jsx
+```jsx 
+import React from "react";
+
+class ConfirmButton extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isConfirmed: false,
+        };
+
+        this.handleConfirm = this.handleConfirm.bind(this);
+    }
+
+    handleConfirm() {
+        this.setState((prevState) => ({
+            isConfirmed: !prevState.isConfirmed,
+        }));
+    }
+
+    render() {
+        return (
+            <button
+                onClick={this.handleConfirm}
+                disabled={this.state.isConfirmed}
+            >
+                {this.state.isConfirmed ? "확인 됨" : "확인하기"}
+            </button>
+        );
+    }
+}
+
+export default ConfirmButton;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+import Accommodate from './chapter_07/Accommodate';
+import ConfirmButton from './chapter_08/ConfirmButton';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <ConfirmButton />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+### 9장.조건부 렌더링
+#### [조건부 렌더링]
+- Conditional Rendering을 조건에 따른 렌더링이라고 해석하고 일반적으로 조건부 렌더링이라고 줄여서 부름
+- 조건부 렌더링은 어떠한 조건에 따라서 렌더링이 달라지는 것을 의미함
+- 조건은 프로그래밍에서 사용하는 조건문이라고 이해하면 됨
+- 조건문의 결과는 true아니면 false
+#### [엘리먼트 변수]
+- 조건부 렌더링을 사용하다 보면 렌더링해야 될 컴포넌트를 변수처럼 다루고 싶을 때가 있는데 이때 사용할 수 있는 방법이 바로 엘리먼트 변수
+- 엘리먼트 변수는 이름 그대로 리액트 엘리먼트를 변수처럼 다루는 방법
+#### [인라인 조건]
+- 인라인 조건이라고 하면 조건문을 코드 안에 집어넣는 것
+- 인라인 If
+    - 인라인 If는 if문을 필요한 곳에 직접 집어넣어서 사용하는 방법
+    - 실제로 if문을 넣는 것은 아니고 if문과 동일한 효과를 내기 위해 &&라는 논리연산자를 사용
+    - && 연산자는 AND연산이라고 부르는데 양쪽에 나오는 조건문이 모두 true인 경우에만 전체 결과가 true가 됨
+    - 따라서 첫 번째 조건문이 true이면 두 번째 조건문을 평가하고, 첫 번째 조건문이 false이면 두 번째 조건문은 평가룰 안하는데 컴퓨터 프로그래밍에서는 이것을 단축 평가라고 함
+- 인라인 If-Else
+    - 인라인 If-Else는 If-Else문을 필요한 곳에 직접 넣어서 사용하는 방법
+    - 인라인 If는 보여주거나 안 보여주는 두 가지 경우만 있었지만, 인라인 If-Else는 조건문의 값에 따라 다른 엘리먼트를 보여줄 때 사용
+    - 그리고 이를 위해서 삼항 연산자라고 부르는 ? 연산자를 사용함
+    - ? 연산자의 경우 앞에 나오는 조건문이 true이면 첫 번째 항목을 리턴하고, false이면 두 번째 항목을 리턴함
+    - 삼항 연산자의 작동 방식
+        - 조건문 ? 참일 경우 : 거짓일 경우
+    - 인라인 If-Else는 조건에 따라 각기 다른 엘리먼트를 렌더링하고 싶을 때 사용
+#### [컴포넌트 렌더링 막기]
+- 컴포넌트를 렌더링 하고 싶지 않을 때에는 null을 리턴하면 됨
+- 리액트에서 특정 컴포넌트를 렌더링하고 싶지 않을 때에는 nill을 리턴하면 됨
+- but, 클래스 컴포넌트의 render()함수에서 null을 리턴하는 것은 컴포넌트의 생명주기 함수에 전혀 영향을 미치지 않음
+#### [실습 - 로그인 여부를 나타내는 툴바 만들기]
+- Toolbar.jsx
+```jsx
+import React from "react";
+
+const styles = {
+    wrapper: {
+        padding: 16,
+        dispaly: "flex",
+        flexDirection: "row",
+        borderBottom: "1px sokid grey",
+    },
+    greeting: {
+        marginRight: 8,
+    },
+};
+
+function Toolbar(props) {
+    const { isLoggedIn, onClickLogin, onClickLogout } = props;
+
+    return (
+        <div style={styles.wrapper}>
+            { isLoggedIn && <span style={styles.greeting}>환영합니다!</span>}
+
+            {isLoggedIn ? (
+                <button onClick={onClickLogout}>로그아웃</button>
+            ) : (
+                <button onClick={onClickLogin}>로그인</button>
+            )}
+        </div>
+    );
+}
+
+export default Toolbar;
+```
+- LandingPage.jsx
+```jsx
+import React, {useState} from "react";
+import Toolbar from "./Toolbar";
+
+function LandingPage(props) {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const onClickLogin = () => {
+        setIsLoggedIn(true);
+    };
+
+    const onClickLogout = () => {
+        setIsLoggedIn(false);
+    };
+
+    return (
+        <div>
+            <Toolbar
+                isLoggedIn = {isLoggedIn}
+                onClickLogin = {onClickLogin}
+                onClickLogout = {onClickLogout}
+            />
+            <div style={{padding: 16}}>소플과 함께하는 리액트 공부!</div>
+        </div>
+    );
+}
+
+export default LandingPage;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+import Accommodate from './chapter_07/Accommodate';
+import ConfirmButton from './chapter_08/ConfirmButton';
+import LandingPage from './chapter_09/LandingPage';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <LandingPage />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+---
+## 2023-04-20 8주차 
+### 중간고사
+---
 ## 2023-04-13 7주차 
 ### 7장.훅
 #### [훅]
