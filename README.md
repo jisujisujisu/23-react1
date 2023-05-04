@@ -1,5 +1,187 @@
 # 202130434 한지수 
 ---
+## 2023-05-04 10주차 
+### 10장.리스트와 키
+#### [리스트와 키]
+- 컴퓨터 프로그래밍에서 리스트는 같은 아이템을 순서대로 모아놓은 것
+- 리스트를 위해 사용하는 구조가 바로 배열
+    - 배열은 자바스크립트의 변수나 객체를 하나의 변수로 묶어놓은 것
+- 컴퓨터 프로그래밍에서의 키는 각 개체나 아이템을 구분할 수 있는 고유한 값
+#### [여러 개의 컴포넌트 렌더링하기]
+- 동적으로 화면의 내용이 바뀌는 경우에는 코드를 직접 하나씩 넣는 방식으로는 구현하기가 까다로운데, 이러한 경우에 사용하는 것이 자바스크립트 배열의 map() 함수
+- map 함수는 영단어 mapping을 떠올리면 생각하기 쉬움
+- 이곳에서의 매핑도 배열에 들어있는 각 변수에 어떤 처리를 한 뒤 리턴하는 것
+#### [기본적인 리스트 컴포넌트]
+- 리스트 아이템에는 무조건 키가 있어야 함
+#### [리스트의 키]
+- 리액트에서 키는 리스트에서 아이템을 구분하기 위한 고유한 문자열
+- 키는 리스트에서 어떤 아이템이 변경, 추가, 또는 제거되었는지 구분하기 위해 사용함
+- 리액트에서의 키의 값은 같은 리스트에 있는 엘리먼트 사이에서만 고유한 값이면 됨
+- 키값의 사용법
+    - 키값으로 숫자의 값을 사용
+    - 키값으로 id를 사용
+    - 키값으로 인덱스를 사용
+        - 리액트에서는 키를 명시적으로 넣어 주지 않으면 기본적으로 인덱스 값을 키값으로 사용
+#### [실습 - 출석부 출력하기]  
+- AttendanceBook.jsx
+```jsx
+import React from "react";
+
+const students = [
+    {
+        id: 1,
+        name: "InJe",
+    },
+    {
+        id: 2,
+        name: "Steve",
+    },
+    {
+        id: 3,
+        name: "Bill",
+    },
+    {
+        id: 4,
+        name: "Jeff",
+    },
+];
+
+function AttendanceBook(props) {
+    return (
+        <ul>
+            {students.map((student) => {
+                return <li key={student.id}>{student.name}</li>;
+            })}
+        </ul>
+    );
+}
+
+export default AttendanceBook;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+import Accommodate from './chapter_07/Accommodate';
+import ConfirmButton from './chapter_08/ConfirmButton';
+import LandingPage from './chapter_09/LandingPage';
+import AttendanceBook from './chapter_10/AttendanceBook';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <AttendanceBook />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+### 11장.폼
+#### [폼]
+- 폼은 사용자로부터 입력을 받기 위해 사용
+#### [제어 컴포넌트]
+- 사용자가 입력한 값에 접근하고 제어할 수 있도록 해주는 컴포넌트
+- 그 값이 리액트의 통제를 받는 입력 폼 엘리먼트
+#### [textarea 태그]
+- 여러 줄에 걸쳐서 나올 정도로 긴 텍스트릴 입력받기 위한 HTML 태그
+- 리액트에서는 value라는 attribute를 사용하여 텍스트를 표시
+#### [select 태그]
+- 드롭다운 목록을 보여주기 위한 HTML 태그
+- 드롭다운 목록은 여러 가지 옵션 중에서 하나를 선택할 수 있는 기능을 제공
+- value라는 attribute를 통해 값을 전달하고 값을 변경할 때는 onChange에서 setValue() 함수를 사용하여 값을 업데이트
+#### [File input 태그]
+- 디바이스의 저장 장치로부터 사용자가 하나 또는 여러 개의 파일을 선택할 수 있게 해주는 태그
+- 서버를 파일로 업로드하거나 자바스크립트의 File API를 사용해서 파일을 다룰 때 사용
+#### [여러개의 입력 다루기]
+- 하나의 컴포넌트에서 여러개의 입력을 다루기 위해서는 여러개의 state를 선언하여 각각의 입력에 대해 사용하면 됨
+#### [Input Null Value]
+- 제어 컴포넌트에 value prop을 정해진 값으로 넣으면 코드를 수정하지 않는 한 입력값을 바꿀 수 없음
+- value prop은 넣되 자유롭게 입력할 수 있게 만들고 싶다면 값에 undefined 또는 null을 넣어주면 됨
+#### [실습 - 사용자 정보 입력받기]  
+- SignUp.jsx
+```jsx
+import React, {useState} from "react";
+
+function SignUp(props) {
+    const [name, setName] = useState("");
+    const [gender, setGender] = useState("남자");
+
+    const handleChangeName = (event) => {
+        setName(event.target.value);
+    };
+
+    const handleChangeGender = (event) => {
+        setGender(event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        alert(`이름: ${name}, 성별: ${gender}`);
+        event.preventDefault();
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label>
+                이름:
+                <input type="text" value={name} onChange={handleChangeName} />
+            </label>
+            <br />
+            <label>
+                성별:
+                <select value={gender} onChange={handleChangeGender}>
+                    <option value="남자">남자</option>
+                    <option value="여자">여자</option>
+                </select>
+            </label>
+            <button type="submit">제출</button>
+        </form>
+    );
+}
+
+export default SignUp;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+import Accommodate from './chapter_07/Accommodate';
+import ConfirmButton from './chapter_08/ConfirmButton';
+import LandingPage from './chapter_09/LandingPage';
+import AttendanceBook from './chapter_10/AttendanceBook';
+import SignUp from './chapter_11/SignUp';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <SignUp />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+---
 ## 2023-04-27 9주차 
 ### 8장.이벤트 핸들링
 #### [이벤트 처리하기]
