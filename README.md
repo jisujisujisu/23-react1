@@ -1,5 +1,129 @@
 # 202130434 한지수 
 ---
+## 2023-05-18 12주차 
+### 13장.합성 VS. 상속
+#### [합성]
+- Composition이라는 영단어는 구성이라는 뜻
+- 그러나 리액트에서의 Composition은 합성을 의미
+- 여러 개의 컴포넌트를 합쳐서 새로운 컴포넌트를 만드는 것을 말함
+- 리액트로 개발을 하다 보면 여러 개의 컴포넌트를 합쳐서 새로운 컴포넌트를 만드는 일이 많기 때문에 합성은 리액트 전반에 걸쳐서 많이 사용하는 방법
+- 조합 방법에 따라 합성의 사용 기법이 나뉘는데 대표적인 합성 사용 기법으로는
+    - [Containment]
+        - 리액트에서 Containment는 하위 컴포넌트를 포함하는 형태의 합성 방법
+        - props.children이나 직접 정의한 props를 이용하여 하위 컴포넌트를 포함하는 형태로 합성하는 방법
+    - [Specialization]
+        - 범용적인 개념을 구조별이 되게 구체화하는 것
+        - 범용적으로 쓸 수 있는 컴포넌트를 만들어 놓고 이를 특수화 시켜서 컴포넌트를 사용하는 합성 방식
+    - [Containment와 Specialization을 같이 사용하기]
+        - Containment를 위해서 props.children을 사용하고 Specialization을 위해 직접 정의한 props를 사용
+#### [상속]
+- Inheritance는 상속이라는 뜻
+- 컴퓨터 프로그래밍에서 상속은 객체지향 프로그래밍에서 나온 개념
+- 부모 클래스를 상속받아서 새로운 자식 클래스를 만든다는 개념으로 자식 클래스는 부모 클래스가 가진 변수나 함수 등의 속성을 갖게 됨
+- 복잡한 컴포넌트를 쪼개 여러 개의 컴포넌트로 만들고 만든 컴포넌트들을 조합하여 새로운 컴포넌트를 만드는 것
+#### [실습 - Card 컴포넌트 만들기]  
+- Card.jsx
+```jsx
+function Card(props) {
+    const {title, backgroundColor, children} = props;
+
+    return (
+        <div
+            style={{
+                margin: 8,
+                padding: 8,
+                borderRadius: 8,
+                boxShadow: "0px 0px 4px grey",
+                backgroundColor: backgroundColor || "white",
+            }}
+        >
+            {title && <h1>{title}</h1>}
+            {children}
+        </div>
+    );
+}
+
+export default Card;
+```
+- ProfileCard.jsx
+```jsx
+import Card from "./Card";
+
+function ProfileCard(props) {
+    return (
+        <Card title="Inje Lee" backgroundColor="#4ea04e">
+            <p>안녕하세요, 소플입니다.</p>
+            <p>저는 리액트를 사용해서 개발하고 있습니다.</p>
+        </Card>
+    );
+}
+
+export default ProfileCard;
+```
+- index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import Library from './chapter_03/Library';
+import Clock from './chapter_04/Clock';
+import CommentList from './chapter_05/CommentList';
+import NotificationList from './chapter_06/NotificationList';
+import Accommodate from './chapter_07/Accommodate';
+import ConfirmButton from './chapter_08/ConfirmButton';
+import LandingPage from './chapter_09/LandingPage';
+import AttendanceBook from './chapter_10/AttendanceBook';
+import SignUp from './chapter_11/SignUp';
+import Calculator from './chapter_12/Calculator';
+import ProfileCard from './chapter_13/ProfileCard';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <ProfileCard />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+### 14장.컨텍스트
+#### [컨텍스트]
+- 컨텍스는 리액트 컴포넌트들 사이에서 데이터를 기존의 props를 통해 전당하는 방식 대신 컴포넌트 트리를 통해 곧바로 컴포넌트에 전달하는 새로운 방식을 제공
+- 컨텍스트를 사용하면 일일이 props에 전달할 필요 럾이 데이터를 필요로 하는 컴포넌트에 곧바로 데이터를 전달할 수 있음
+- 코드도 매우 깔끔해지고 데이터를 한 곳에서 관리하기 때문에 디버깅을 하기에도 굉장히 유리함
+- 여러 컴포넌트에서 계속해서 접근이 일어날 수 있는 데이터들이 있는 경우 컨텍스를 사용
+- Provider의 모든 하위 컴포넌트가 얼마나 깊이 위치해 있는지 관계 없이 컨텍스트릐 데이터를 읽을 수 있음
+#### [컨텍스트를 사용하기 전에 고려할 점]
+- 무조건 컨텍스를 사용하는 것은 좋은 것이 아님
+- 컴포넌트와 컨텍스트가 연동되면 재사용성이 떨어지기 때문
+- 다른 레벨의 많은 컴포넌트가 데이터를 필요로 하는 경우가 아니라면 기존에 사용하던 방식대로 props를 통해 데이터를 전달하는 컴포넌트 합성 방법이 더 적합
+#### [컨텍스트 API]
+- React.createContext
+    - 컨텍스트를 사용하기 위해서 가장 먼저 해야 할 일은 컨텍스트를 생성하는 것
+    - 컨텍스트를 생성하기 위해서 React.createContext() 함수를 사용
+    - 상위 레벨에 매칭되는 Provider가 없다면, 기본값 사용
+    - 기본값으로 undefined를 넣으면 기본값이 사용되지 않음
+- Context.Provider
+    - 데이터를 제공해주는 컴포넌트
+    - Context.Provider 컴포넌트로 하위 컴포넌트들을 감싸주면 모든 하위 컴포넌트들이 해당 컨텍스트의 데이터에 접근할 수 있게 됨
+- Class.contextType
+    - Provider 하위에 있는 클래스 컴포넌트에서 컨텍스트의 데이터에 접근하기 위해 사용
+    - MyClass.contextType = MyContext;라고 해주면 MyClass하는 클래스 컴포넌트는 MyContext의 데이터에 접근할 수 있게 됨
+    - 이 API는 단 하나의 컨텍스트만을 구독할 수 있음
+- Context.Consumer
+    - 컨텍스트의 데이터를 구독하는 컴포넌트
+    - 클래스 컴포넌트에서는 위에 나온 Class.contextType을 사용하면 되고, 함수 컴포넌트에서는 Context.Consumer를 사용하여 컨텍스트를 구독할 수 있음
+    - 컴포넌트의 자식으로 함수가 올 수 있는데 funtion as a child라고 부름
+- Context.displayName
+    - 컨텍스트 객체는 displayName이라는 문자열 속성을 가짐
+    - 크롬의 리액트 개발자 도구에서는 컨텍스트의 Provider나 Consumer를 표시할 때 displayName을 함께 표시해 줌
+---
 ## 2023-05-11 11주차 
 ### 12장.State 끌어올리기
 #### [Shared State]
